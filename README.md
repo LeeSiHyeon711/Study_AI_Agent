@@ -22,6 +22,12 @@ Study_AI_Agent/
 │   ├── langchain_simple_chat_streamlit.py # LangChain 기본 채팅 (메시지 히스토리)
 │   ├── langchain_streamlit_tool_0.py # LangChain 스트리밍 채팅 (기본)
 │   └── langchain_streamlit_tool.py # LangChain 도구 연동 스트리밍 채팅
+├── chap09/                 # 9장: RAG (Retrieval-Augmented Generation)
+│   ├── rag_practice.ipynb # RAG 시스템 구현 실습
+│   └── data/              # RAG 학습용 데이터
+│       ├── OneNYC_2050_Strategic_Plan.pdf # 뉴욕시 전략 계획서
+│       └── 2040_seoul_plan.pdf # 서울시 2040 계획서
+├── chroma_store/          # Chroma 벡터 데이터베이스 저장소
 ├── .venv/                  # 가상환경
 ├── .gitignore             # Git 무시 파일 설정
 └── README.md              # 프로젝트 설명서
@@ -47,7 +53,7 @@ Study_AI_Agent/
    
    또는 개별 설치:
    ```bash
-   pip install openai>=1.0.0 python-dotenv>=1.0.0 streamlit>=1.28.0 pytz>=2023.3 yfinance>=0.2.0 langchain>=0.3.0 langchain-openai>=0.3.0 langchain-core>=0.3.0 tabulate>=0.9.0
+   pip install openai>=1.0.0 python-dotenv>=1.0.0 streamlit>=1.28.0 pytz>=2023.3 yfinance>=0.2.0 langchain>=0.3.0 langchain-openai>=0.3.0 langchain-core>=0.3.0 langchain-community>=0.3.0 langchain-chroma>=0.3.0 langchain-text-splitters>=0.3.0 chromadb>=0.4.0 tabulate>=0.9.0
    ```
 
 3. **환경 변수 설정**
@@ -265,6 +271,64 @@ messages = [HumanMessage("부산은 지금 몇 시야?")]
 response = llm_with_tools.invoke(messages)
 ```
 
+### Chapter 9: RAG (Retrieval-Augmented Generation)
+
+#### 9.1 RAG 시스템 구현 실습 (`rag_practice.ipynb`)
+
+- **RAG 개념**: 검색 기반 생성 모델을 통한 정확한 정보 제공
+- **문서 처리**: PDF 문서 로딩 및 텍스트 분할
+- **벡터 데이터베이스**: Chroma를 활용한 임베딩 저장 및 검색
+- **검색 및 생성**: 관련 문서 검색 후 AI 응답 생성
+
+**주요 기능**:
+- **문서 로더**: `PyPDFLoader`를 사용한 PDF 문서 로딩
+- **텍스트 분할**: `RecursiveCharacterTextSplitter`를 통한 청크 분할
+- **임베딩**: OpenAI 임베딩 모델을 사용한 벡터화
+- **벡터 저장소**: Chroma 벡터 데이터베이스에 임베딩 저장
+- **유사도 검색**: 쿼리와 관련된 문서 청크 검색
+- **문맥 기반 응답**: 검색된 문서를 바탕으로 정확한 답변 생성
+
+**학습 데이터**:
+- **뉴욕시 전략 계획서**: OneNYC 2050 Strategic Plan (117MB)
+- **서울시 2040 계획서**: 2040 Seoul Plan (5.6MB)
+
+**주요 특징**:
+- **정확한 정보 제공**: 외부 문서를 참조하여 사실에 기반한 답변
+- **실시간 검색**: 사용자 질문에 관련된 문서를 실시간으로 검색
+- **문맥 이해**: 검색된 문서의 맥락을 고려한 응답 생성
+- **확장 가능성**: 다양한 문서 형식과 소스 지원
+
+**실행 방법**:
+```bash
+jupyter notebook chap09/rag_practice.ipynb
+```
+
+**사용 예시**:
+```python
+# 문서 로딩
+loader = PyPDFLoader("data/OneNYC_2050_Strategic_Plan.pdf")
+documents = loader.load()
+
+# 텍스트 분할
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000,
+    chunk_overlap=200
+)
+splits = text_splitter.split_documents(documents)
+
+# 벡터 저장소 생성
+embeddings = OpenAIEmbeddings()
+vectorstore = Chroma.from_documents(splits, embeddings)
+
+# RAG 체인 생성
+llm = ChatOpenAI(model="gpt-4o-mini")
+retrieval_chain = create_stuff_documents_chain(llm, prompt)
+
+# 질문에 대한 답변 생성
+question = "뉴욕시의 기후 변화 대응 정책은 무엇인가요?"
+answer = retrieval_chain.invoke({"context": docs, "question": question})
+```
+
 ## 🔧 주요 기능
 
 ### 1. 환경 변수 관리
@@ -286,7 +350,14 @@ response = llm_with_tools.invoke(messages)
 - **세션 관리**: 사용자별 독립적인 대화 세션 지원
 - **재귀적 스트리밍**: 도구 호출 후 최종 응답도 스트리밍으로 처리
 
-### 4. 모델 설정
+### 4. RAG (Retrieval-Augmented Generation)
+- **문서 처리**: PDF 문서 로딩 및 텍스트 분할
+- **벡터 데이터베이스**: Chroma를 활용한 임베딩 저장 및 검색
+- **유사도 검색**: 쿼리와 관련된 문서 청크 검색
+- **문맥 기반 응답**: 검색된 문서를 바탕으로 정확한 답변 생성
+- **실시간 검색**: 사용자 질문에 관련된 문서를 실시간으로 검색
+
+### 5. 모델 설정
 - GPT-4o 모델 사용
 - Temperature 조절을 통한 응답 창의성 제어
 - 시스템 메시지를 통한 AI 페르소나 설정
@@ -331,6 +402,23 @@ AI: 마이크로소프트(MSFT)의 최근 주가는 다음과 같습니다:
 현재 미국 뉴욕의 시간은 2025년 9월 1일 04:41:41입니다.
 ```
 
+### RAG 시스템 예시
+
+#### 문서 기반 질의응답
+```
+사용자: 뉴욕시의 기후 변화 대응 정책은 무엇인가요?
+AI: 뉴욕시의 기후 변화 대응 정책에 대해 OneNYC 2050 전략 계획서를 참조하여 답변드리겠습니다.
+
+뉴욕시는 다음과 같은 주요 기후 변화 대응 정책을 추진하고 있습니다:
+
+1. **탄소 중립 목표**: 2050년까지 탄소 중립 달성
+2. **재생에너지 확대**: 태양광, 풍력 등 청정에너지 확대
+3. **건물 에너지 효율화**: 기존 건물의 에너지 효율 개선
+4. **대중교통 확대**: 대중교통 이용 촉진 및 전기차 보급
+5. **해안 보호**: 기후 변화에 따른 해수면 상승 대비
+
+이러한 정책들은 OneNYC 2050 전략의 핵심 구성 요소로, 지속 가능한 도시 발전을 위한 종합적인 접근 방식을 제시합니다.
+
 ### 종료 방법
 - 콘솔 애플리케이션: `exit` 입력
 - Streamlit: 브라우저 창 닫기
@@ -346,6 +434,9 @@ AI: 마이크로소프트(MSFT)의 최근 주가는 다음과 같습니다:
 - **LangChain**: AI 애플리케이션 개발 프레임워크
 - **Pydantic**: 데이터 검증 및 설정 관리
 - **Jupyter Notebook**: 인터랙티브 개발 환경
+- **Chroma**: 벡터 데이터베이스
+- **langchain-community**: 문서 로더 및 텍스트 분할기
+- **langchain-chroma**: Chroma 벡터 저장소 연동
 
 ## 📖 학습 목표
 
@@ -366,14 +457,23 @@ AI: 마이크로소프트(MSFT)의 최근 주가는 다음과 같습니다:
    - 메시지 히스토리 관리 및 세션 기반 대화
    - 재귀적 스트리밍과 도구 호출의 조합
 
-4. **실용적 애플리케이션 개발**
+4. **RAG (Retrieval-Augmented Generation) 시스템 구현**
+   - 문서 처리 및 텍스트 분할 기법
+   - 벡터 데이터베이스 구축 및 관리
+   - 유사도 검색 알고리즘 이해
+   - 문맥 기반 AI 응답 생성
+   - Chroma 벡터 저장소 활용
+
+5. **실용적 애플리케이션 개발**
    - 콘솔 기반 채팅봇
    - 웹 기반 인터페이스
    - 함수 호출 기능이 포함된 AI 시스템
    - 실시간 데이터 조회 시스템 (주식, 시간 등)
    - Jupyter 노트북을 활용한 인터랙티브 AI 개발
    - LangChain을 활용한 고급 AI 애플리케이션
-   - 세션 기반 대화 시스템 및 메시지 히스토리 관리
+- 세션 기반 대화 시스템 및 메시지 히스토리 관리
+- RAG 시스템을 활용한 문서 기반 AI 챗봇
+- 벡터 데이터베이스를 활용한 지식 검색 시스템
 
 ## 🚀 고급 기능
 
@@ -398,6 +498,13 @@ AI: 마이크로소프트(MSFT)의 최근 주가는 다음과 같습니다:
 - **도구 바인딩**: `llm.bind_tools()`를 통한 모델과 도구의 연결
 - **재귀적 스트리밍**: 도구 호출 후 최종 응답도 스트리밍으로 처리
 - **메시지 타입 구분**: 시스템, 사용자, AI, 도구 메시지를 구분하여 표시
+
+### RAG 시스템
+- **문서 처리 파이프라인**: PDF 로딩부터 텍스트 분할까지 자동화
+- **벡터 임베딩**: OpenAI 임베딩 모델을 사용한 고품질 벡터화
+- **유사도 검색**: 코사인 유사도를 통한 정확한 문서 검색
+- **문맥 기반 생성**: 검색된 문서를 바탕으로 사실에 기반한 답변
+- **확장 가능한 아키텍처**: 다양한 문서 형식과 벡터 저장소 지원
 
 ## 🔒 보안 주의사항
 
