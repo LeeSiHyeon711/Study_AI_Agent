@@ -12,6 +12,10 @@ Study_AI_Agent/
 │   ├── single_turn.py     # 싱글턴 대화 (메모리 없음)
 │   ├── multi_turn.py      # 멀티턴 대화 (메모리 있음)
 │   └── streamlit_basic.py # Streamlit 웹 인터페이스
+├── chap07/                 # 7장: GPT Functions (함수 호출)
+│   ├── gpt_functions_0.py # 시간 조회 함수 정의
+│   ├── what_time_is_it_terminal_0.py # 터미널 기반 함수 호출 예제
+│   └── what_time_is_it_streamlit.py # Streamlit 기반 함수 호출 예제
 ├── .venv/                  # 가상환경
 ├── .gitignore             # Git 무시 파일 설정
 └── README.md              # 프로젝트 설명서
@@ -32,7 +36,7 @@ Study_AI_Agent/
 
 2. **필요한 패키지 설치**
    ```bash
-   pip install openai python-dotenv streamlit
+   pip install openai python-dotenv streamlit pytz
    ```
 
 3. **환경 변수 설정**
@@ -99,6 +103,49 @@ python chap03/multi_turn.py
 streamlit run chap03/streamlit_basic.py
 ```
 
+### Chapter 7: GPT Functions (함수 호출)
+
+#### 7.1 함수 정의 (`gpt_functions_0.py`)
+
+- GPT가 호출할 수 있는 함수 정의
+- 시간 조회 함수 구현 (`get_current_time`)
+- 함수 스키마 정의 및 파라미터 설정
+
+**주요 기능**:
+- 다양한 타임존의 현재 시간 조회
+- `pytz` 라이브러리를 활용한 정확한 시간대 처리
+
+#### 7.2 터미널 기반 함수 호출 (`what_time_is_it_terminal_0.py`)
+
+- 콘솔 환경에서 GPT Functions 사용
+- 함수 호출 및 결과 처리 로직
+- 다중 함수 호출 지원
+
+**실행 방법**:
+```bash
+python chap07/what_time_is_it_terminal_0.py
+```
+
+**사용 예시**:
+```
+사용자: 뉴욕, 런던, 파리 시간 알려줘
+AI: 현재 시각은 다음과 같습니다:
+- 뉴욕: 2025년 8월 31일 22시 45분
+- 런던: 2025년 9월 1일 03시 45분
+- 파리: 2025년 9월 1일 04시 45분
+```
+
+#### 7.3 Streamlit 기반 함수 호출 (`what_time_is_it_streamlit.py`)
+
+- 웹 인터페이스에서 GPT Functions 활용
+- 실시간 함수 호출 및 결과 표시
+- 사용자 친화적인 채팅 인터페이스
+
+**실행 방법**:
+```bash
+streamlit run chap07/what_time_is_it_streamlit.py
+```
+
 ## 🔧 주요 기능
 
 ### 1. 환경 변수 관리
@@ -110,7 +157,12 @@ streamlit run chap03/streamlit_basic.py
 - **멀티턴**: 대화 히스토리 유지
 - **웹 인터페이스**: 브라우저 기반 채팅
 
-### 3. 모델 설정
+### 3. GPT Functions
+- **함수 정의**: GPT가 호출할 수 있는 함수 스키마 정의
+- **함수 호출**: AI가 필요에 따라 함수를 자동 호출
+- **결과 처리**: 함수 실행 결과를 AI 응답에 통합
+
+### 4. 모델 설정
 - GPT-4o 모델 사용
 - Temperature 조절을 통한 응답 창의성 제어
 - 시스템 메시지를 통한 AI 페르소나 설정
@@ -126,6 +178,17 @@ AI: 안녕하세요, 시현님! 만나서 반갑습니다. 오늘 어떻게 도�
 AI: 시현님이라고 소개해 주셨는데, 더 구체적으로 말씀해주시면...
 ```
 
+### 함수 호출 예시
+```
+사용자: 서울 시간이 몇 시야?
+AI: 서울의 현재 시간은 2025년 8월 31일 오후 3시 45분입니다.
+
+사용자: 뉴욕과 도쿄 시간도 알려줘
+AI: 현재 시각은 다음과 같습니다:
+- 뉴욕: 2025년 8월 31일 오전 2시 45분
+- 도쿄: 2025년 8월 31일 오후 4시 45분
+```
+
 ### 종료 방법
 - 콘솔 애플리케이션: `exit` 입력
 - Streamlit: 브라우저 창 닫기
@@ -136,6 +199,7 @@ AI: 시현님이라고 소개해 주셨는데, 더 구체적으로 말씀해주�
 - **OpenAI API**: GPT-4o 모델
 - **Streamlit**: 웹 인터페이스
 - **python-dotenv**: 환경 변수 관리
+- **pytz**: 시간대 처리
 
 ## 📖 학습 목표
 
@@ -147,9 +211,14 @@ AI: 시현님이라고 소개해 주셨는데, 더 구체적으로 말씀해주�
    - OpenAI API 사용법
    - 응답 처리 및 에러 핸들링
 
-3. **실용적 애플리케이션 개발**
+3. **GPT Functions 활용**
+   - 함수 호출 메커니즘 이해
+   - 외부 함수와 AI의 연동 방법
+
+4. **실용적 애플리케이션 개발**
    - 콘솔 기반 채팅봇
    - 웹 기반 인터페이스
+   - 함수 호출 기능이 포함된 AI 시스템
 
 ## 🔒 보안 주의사항
 
