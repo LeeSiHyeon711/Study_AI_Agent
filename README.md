@@ -18,7 +18,10 @@ Study_AI_Agent/
 │   ├── what_time_is_it_streamlit.py # Streamlit 기반 시간 조회 예제
 │   └── stock_info_streamlit.py # Streamlit 기반 주식 정보 조회 예제
 ├── chap08/                 # 8장: LangChain Tools
-│   └── langchain_tool.ipynb # LangChain을 활용한 도구 연동 예제
+│   ├── langchain_tool.ipynb # LangChain을 활용한 도구 연동 예제
+│   ├── langchain_simple_chat_streamlit.py # LangChain 기본 채팅 (메시지 히스토리)
+│   ├── langchain_streamlit_tool_0.py # LangChain 스트리밍 채팅 (기본)
+│   └── langchain_streamlit_tool.py # LangChain 도구 연동 스트리밍 채팅
 ├── .venv/                  # 가상환경
 ├── .gitignore             # Git 무시 파일 설정
 └── README.md              # 프로젝트 설명서
@@ -39,7 +42,12 @@ Study_AI_Agent/
 
 2. **필요한 패키지 설치**
    ```bash
-   pip install openai python-dotenv streamlit pytz yfinance langchain-openai langchain-core
+   pip install -r requirements.txt
+   ```
+   
+   또는 개별 설치:
+   ```bash
+   pip install openai>=1.0.0 python-dotenv>=1.0.0 streamlit>=1.28.0 pytz>=2023.3 yfinance>=0.2.0 langchain>=0.3.0 langchain-openai>=0.3.0 langchain-core>=0.3.0 tabulate>=0.9.0
    ```
 
 3. **환경 변수 설정**
@@ -172,7 +180,7 @@ streamlit run chap07/stock_info_streamlit.py
 
 ### Chapter 8: LangChain Tools
 
-**파일**: `chap08/langchain_tool.ipynb`
+#### 8.1 Jupyter 노트북 기반 도구 연동 (`langchain_tool.ipynb`)
 
 - **LangChain 프레임워크**: OpenAI API를 더 체계적으로 활용하는 프레임워크
 - **Tool 시스템**: LangChain의 `@tool` 데코레이터를 사용한 함수 정의
@@ -185,16 +193,60 @@ streamlit run chap07/stock_info_streamlit.py
 - **도구 바인딩**: `llm.bind_tools()`를 통한 모델과 도구의 연결
 - **메시지 처리**: LangChain의 메시지 시스템을 통한 대화 관리
 
-**학습 내용**:
-- LangChain의 기본 구조와 개념
-- `@tool` 데코레이터를 사용한 함수 정의
-- Pydantic을 활용한 입력값 검증
-- 도구 호출 및 결과 처리 과정
-- Jupyter 노트북에서의 인터랙티브 개발
-
 **실행 방법**:
 ```bash
 jupyter notebook chap08/langchain_tool.ipynb
+```
+
+#### 8.2 LangChain 기본 채팅 (`langchain_simple_chat_streamlit.py`)
+
+- **메시지 히스토리 관리**: `RunnableWithMessageHistory`를 통한 대화 기록 유지
+- **세션 관리**: 사용자별 독립적인 대화 세션 지원
+- **스트리밍 응답**: 실시간 타이핑 효과로 응답 표시
+- **LangChain 메시지 시스템**: `SystemMessage`, `HumanMessage`, `AIMessage` 활용
+
+**주요 특징**:
+- **세션 기반 대화**: 각 사용자별로 독립적인 대화 히스토리 관리
+- **메모리 유지**: 이전 대화 내용을 기억하고 맥락을 이해
+- **실시간 스트리밍**: 응답이 실시간으로 타이핑되듯이 표시
+
+**실행 방법**:
+```bash
+streamlit run chap08/langchain_simple_chat_streamlit.py
+```
+
+#### 8.3 LangChain 스트리밍 채팅 (`langchain_streamlit_tool_0.py`)
+
+- **기본 스트리밍**: LangChain의 `stream()` 메서드를 활용한 실시간 응답
+- **메시지 관리**: Streamlit session_state를 통한 대화 기록 저장
+- **간단한 구조**: 도구 없이 순수한 대화 기능에 집중
+
+**주요 특징**:
+- **스트리밍 응답**: `llm.stream()`을 통한 실시간 응답 처리
+- **메시지 타입 구분**: 시스템, 사용자, AI 메시지를 구분하여 표시
+- **세션 상태 관리**: Streamlit의 session_state를 활용한 대화 기록 유지
+
+**실행 방법**:
+```bash
+streamlit run chap08/langchain_streamlit_tool_0.py
+```
+
+#### 8.4 LangChain 도구 연동 스트리밍 채팅 (`langchain_streamlit_tool.py`)
+
+- **도구 연동**: `@tool` 데코레이터를 사용한 함수 정의 및 호출
+- **스트리밍 + 도구**: 스트리밍 응답과 도구 호출의 조합
+- **재귀적 처리**: 도구 호출 후 최종 응답도 스트리밍으로 처리
+- **시간 조회 기능**: 다양한 타임존의 현재 시간 조회
+
+**주요 특징**:
+- **도구 바인딩**: `llm.bind_tools()`를 통한 모델과 도구의 연결
+- **재귀적 스트리밍**: 도구 호출 후 최종 응답도 스트리밍으로 표시
+- **실시간 도구 실행**: 사용자 질문에 따라 자동으로 도구 호출
+- **메시지 순서 관리**: 도구 호출과 응답의 올바른 순서 보장
+
+**실행 방법**:
+```bash
+streamlit run chap08/langchain_streamlit_tool.py
 ```
 
 **사용 예시**:
@@ -230,6 +282,9 @@ response = llm_with_tools.invoke(messages)
 - **결과 처리**: 함수 실행 결과를 AI 응답에 통합
 - **LangChain Tools**: `@tool` 데코레이터를 사용한 체계적인 도구 관리
 - **Pydantic 모델**: 타입 안전성을 위한 입력값 검증
+- **메시지 히스토리**: `RunnableWithMessageHistory`를 통한 대화 기록 관리
+- **세션 관리**: 사용자별 독립적인 대화 세션 지원
+- **재귀적 스트리밍**: 도구 호출 후 최종 응답도 스트리밍으로 처리
 
 ### 4. 모델 설정
 - GPT-4o 모델 사용
@@ -308,6 +363,8 @@ AI: 마이크로소프트(MSFT)의 최근 주가는 다음과 같습니다:
    - 스트리밍 응답과 함수 호출의 조합
    - LangChain 프레임워크를 통한 체계적인 도구 관리
    - Pydantic을 활용한 타입 안전성 확보
+   - 메시지 히스토리 관리 및 세션 기반 대화
+   - 재귀적 스트리밍과 도구 호출의 조합
 
 4. **실용적 애플리케이션 개발**
    - 콘솔 기반 채팅봇
@@ -315,6 +372,8 @@ AI: 마이크로소프트(MSFT)의 최근 주가는 다음과 같습니다:
    - 함수 호출 기능이 포함된 AI 시스템
    - 실시간 데이터 조회 시스템 (주식, 시간 등)
    - Jupyter 노트북을 활용한 인터랙티브 AI 개발
+   - LangChain을 활용한 고급 AI 애플리케이션
+   - 세션 기반 대화 시스템 및 메시지 히스토리 관리
 
 ## 🚀 고급 기능
 
@@ -332,6 +391,13 @@ AI: 마이크로소프트(MSFT)의 최근 주가는 다음과 같습니다:
 - **Yahoo Finance API**: 실시간 주식 데이터 조회
 - **다양한 시간대**: 전 세계 시간대 지원
 - **마크다운 형식**: 표 형태의 데이터를 깔끔하게 표시
+
+### LangChain 고급 기능
+- **메시지 히스토리 관리**: `RunnableWithMessageHistory`를 통한 대화 기록 유지
+- **세션 기반 대화**: 사용자별 독립적인 대화 세션 지원
+- **도구 바인딩**: `llm.bind_tools()`를 통한 모델과 도구의 연결
+- **재귀적 스트리밍**: 도구 호출 후 최종 응답도 스트리밍으로 처리
+- **메시지 타입 구분**: 시스템, 사용자, AI, 도구 메시지를 구분하여 표시
 
 ## 🔒 보안 주의사항
 
