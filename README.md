@@ -17,6 +17,8 @@ Study_AI_Agent/
 │   ├── what_time_is_it_terminal_0.py # 터미널 기반 함수 호출 예제
 │   ├── what_time_is_it_streamlit.py # Streamlit 기반 시간 조회 예제
 │   └── stock_info_streamlit.py # Streamlit 기반 주식 정보 조회 예제
+├── chap08/                 # 8장: LangChain Tools
+│   └── langchain_tool.ipynb # LangChain을 활용한 도구 연동 예제
 ├── .venv/                  # 가상환경
 ├── .gitignore             # Git 무시 파일 설정
 └── README.md              # 프로젝트 설명서
@@ -37,7 +39,7 @@ Study_AI_Agent/
 
 2. **필요한 패키지 설치**
    ```bash
-   pip install openai python-dotenv streamlit pytz yfinance
+   pip install openai python-dotenv streamlit pytz yfinance langchain-openai langchain-core
    ```
 
 3. **환경 변수 설정**
@@ -168,6 +170,49 @@ streamlit run chap07/what_time_is_it_streamlit.py
 streamlit run chap07/stock_info_streamlit.py
 ```
 
+### Chapter 8: LangChain Tools
+
+**파일**: `chap08/langchain_tool.ipynb`
+
+- **LangChain 프레임워크**: OpenAI API를 더 체계적으로 활용하는 프레임워크
+- **Tool 시스템**: LangChain의 `@tool` 데코레이터를 사용한 함수 정의
+- **Pydantic 모델**: 타입 안전성을 위한 입력값 검증 및 구조화
+- **Jupyter 노트북**: 인터랙티브한 학습 환경
+
+**주요 기능**:
+- **시간 조회 도구**: `get_current_time` 함수로 다양한 타임존의 현재 시간 조회
+- **주식 데이터 조회**: `get_yf_stock_history` 함수로 Yahoo Finance API 연동
+- **도구 바인딩**: `llm.bind_tools()`를 통한 모델과 도구의 연결
+- **메시지 처리**: LangChain의 메시지 시스템을 통한 대화 관리
+
+**학습 내용**:
+- LangChain의 기본 구조와 개념
+- `@tool` 데코레이터를 사용한 함수 정의
+- Pydantic을 활용한 입력값 검증
+- 도구 호출 및 결과 처리 과정
+- Jupyter 노트북에서의 인터랙티브 개발
+
+**실행 방법**:
+```bash
+jupyter notebook chap08/langchain_tool.ipynb
+```
+
+**사용 예시**:
+```python
+# 도구 정의
+@tool
+def get_current_time(timezone: str, location: str) -> str:
+    """현재 시각을 반환하는 함수"""
+    # 구현 내용...
+
+# 모델에 도구 바인딩
+llm_with_tools = llm.bind_tools([get_current_time])
+
+# 사용자 질문
+messages = [HumanMessage("부산은 지금 몇 시야?")]
+response = llm_with_tools.invoke(messages)
+```
+
 ## 🔧 주요 기능
 
 ### 1. 환경 변수 관리
@@ -179,10 +224,12 @@ streamlit run chap07/stock_info_streamlit.py
 - **멀티턴**: 대화 히스토리 유지
 - **웹 인터페이스**: 브라우저 기반 채팅
 
-### 3. GPT Functions
+### 3. GPT Functions & LangChain Tools
 - **함수 정의**: GPT가 호출할 수 있는 함수 스키마 정의
 - **함수 호출**: AI가 필요에 따라 함수를 자동 호출
 - **결과 처리**: 함수 실행 결과를 AI 응답에 통합
+- **LangChain Tools**: `@tool` 데코레이터를 사용한 체계적인 도구 관리
+- **Pydantic 모델**: 타입 안전성을 위한 입력값 검증
 
 ### 4. 모델 설정
 - GPT-4o 모델 사용
@@ -241,6 +288,9 @@ AI: 마이크로소프트(MSFT)의 최근 주가는 다음과 같습니다:
 - **python-dotenv**: 환경 변수 관리
 - **pytz**: 시간대 처리
 - **yfinance**: Yahoo Finance API (주식 데이터)
+- **LangChain**: AI 애플리케이션 개발 프레임워크
+- **Pydantic**: 데이터 검증 및 설정 관리
+- **Jupyter Notebook**: 인터랙티브 개발 환경
 
 ## 📖 학습 목표
 
@@ -252,16 +302,19 @@ AI: 마이크로소프트(MSFT)의 최근 주가는 다음과 같습니다:
    - OpenAI API 사용법
    - 응답 처리 및 에러 핸들링
 
-3. **GPT Functions 활용**
+3. **GPT Functions & LangChain Tools 활용**
    - 함수 호출 메커니즘 이해
    - 외부 함수와 AI의 연동 방법
    - 스트리밍 응답과 함수 호출의 조합
+   - LangChain 프레임워크를 통한 체계적인 도구 관리
+   - Pydantic을 활용한 타입 안전성 확보
 
 4. **실용적 애플리케이션 개발**
    - 콘솔 기반 채팅봇
    - 웹 기반 인터페이스
    - 함수 호출 기능이 포함된 AI 시스템
    - 실시간 데이터 조회 시스템 (주식, 시간 등)
+   - Jupyter 노트북을 활용한 인터랙티브 AI 개발
 
 ## 🚀 고급 기능
 
