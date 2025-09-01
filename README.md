@@ -13,9 +13,10 @@ Study_AI_Agent/
 │   ├── multi_turn.py      # 멀티턴 대화 (메모리 있음)
 │   └── streamlit_basic.py # Streamlit 웹 인터페이스
 ├── chap07/                 # 7장: GPT Functions (함수 호출)
-│   ├── gpt_functions_0.py # 시간 조회 함수 정의
+│   ├── gpt_functions_0.py # 시간 조회 및 주식 정보 함수 정의
 │   ├── what_time_is_it_terminal_0.py # 터미널 기반 함수 호출 예제
-│   └── what_time_is_it_streamlit.py # Streamlit 기반 함수 호출 예제
+│   ├── what_time_is_it_streamlit.py # Streamlit 기반 시간 조회 예제
+│   └── stock_info_streamlit.py # Streamlit 기반 주식 정보 조회 예제
 ├── .venv/                  # 가상환경
 ├── .gitignore             # Git 무시 파일 설정
 └── README.md              # 프로젝트 설명서
@@ -36,7 +37,7 @@ Study_AI_Agent/
 
 2. **필요한 패키지 설치**
    ```bash
-   pip install openai python-dotenv streamlit pytz
+   pip install openai python-dotenv streamlit pytz yfinance
    ```
 
 3. **환경 변수 설정**
@@ -108,12 +109,16 @@ streamlit run chap03/streamlit_basic.py
 #### 7.1 함수 정의 (`gpt_functions_0.py`)
 
 - GPT가 호출할 수 있는 함수 정의
-- 시간 조회 함수 구현 (`get_current_time`)
+- 시간 조회 및 주식 정보 조회 함수 구현
 - 함수 스키마 정의 및 파라미터 설정
 
 **주요 기능**:
-- 다양한 타임존의 현재 시간 조회
-- `pytz` 라이브러리를 활용한 정확한 시간대 처리
+- **시간 조회**: 다양한 타임존의 현재 시간 조회 (`get_current_time`)
+- **주식 정보**: Yahoo Finance API를 통한 주식 데이터 조회
+  - `get_yf_stock_info`: 종목 기본 정보
+  - `get_yf_stock_history`: 주가 히스토리 데이터
+  - `get_yf_stock_recommendations`: 투자 추천 정보
+- `pytz` 및 `yfinance` 라이브러리 활용
 
 #### 7.2 터미널 기반 함수 호출 (`what_time_is_it_terminal_0.py`)
 
@@ -135,15 +140,32 @@ AI: 현재 시각은 다음과 같습니다:
 - 파리: 2025년 9월 1일 04시 45분
 ```
 
-#### 7.3 Streamlit 기반 함수 호출 (`what_time_is_it_streamlit.py`)
+#### 7.3 Streamlit 기반 시간 조회 (`what_time_is_it_streamlit.py`)
 
-- 웹 인터페이스에서 GPT Functions 활용
+- 웹 인터페이스에서 시간 조회 함수 활용
 - 실시간 함수 호출 및 결과 표시
 - 사용자 친화적인 채팅 인터페이스
 
 **실행 방법**:
 ```bash
 streamlit run chap07/what_time_is_it_streamlit.py
+```
+
+#### 7.4 Streamlit 기반 주식 정보 조회 (`stock_info_streamlit.py`)
+
+- 웹 인터페이스에서 주식 정보 조회 함수 활용
+- **스트리밍 응답**: 실시간 타이핑 효과로 응답 표시
+- **다중 함수 호출**: 시간 조회와 주식 정보를 동시에 조회 가능
+- **고급 메시지 처리**: OpenAI API 메시지 순서 최적화
+
+**주요 특징**:
+- 스트리밍 방식의 실시간 응답 표시
+- 툴 호출 후 최종 응답도 스트리밍으로 처리
+- 메시지 순서 최적화로 안정적인 함수 호출
+
+**실행 방법**:
+```bash
+streamlit run chap07/stock_info_streamlit.py
 ```
 
 ## 🔧 주요 기능
@@ -179,6 +201,8 @@ AI: 시현님이라고 소개해 주셨는데, 더 구체적으로 말씀해주�
 ```
 
 ### 함수 호출 예시
+
+#### 시간 조회
 ```
 사용자: 서울 시간이 몇 시야?
 AI: 서울의 현재 시간은 2025년 8월 31일 오후 3시 45분입니다.
@@ -187,6 +211,22 @@ AI: 서울의 현재 시간은 2025년 8월 31일 오후 3시 45분입니다.
 AI: 현재 시각은 다음과 같습니다:
 - 뉴욕: 2025년 8월 31일 오전 2시 45분
 - 도쿄: 2025년 8월 31일 오후 4시 45분
+```
+
+#### 주식 정보 조회
+```
+사용자: 애플 주식 정보 알려줘
+AI: 애플(AAPL)의 주가 정보를 조회해드리겠습니다.
+
+사용자: 마이크로소프트 주가와 현재 뉴욕 시간 알려줘
+AI: 마이크로소프트(MSFT)의 최근 주가는 다음과 같습니다:
+- 오픈가: $508.66
+- 고가: $509.6
+- 저가: $504.49
+- 종가: $506.69
+- 거래량: 20,954,200
+
+현재 미국 뉴욕의 시간은 2025년 9월 1일 04:41:41입니다.
 ```
 
 ### 종료 방법
@@ -200,6 +240,7 @@ AI: 현재 시각은 다음과 같습니다:
 - **Streamlit**: 웹 인터페이스
 - **python-dotenv**: 환경 변수 관리
 - **pytz**: 시간대 처리
+- **yfinance**: Yahoo Finance API (주식 데이터)
 
 ## 📖 학습 목표
 
@@ -214,11 +255,30 @@ AI: 현재 시각은 다음과 같습니다:
 3. **GPT Functions 활용**
    - 함수 호출 메커니즘 이해
    - 외부 함수와 AI의 연동 방법
+   - 스트리밍 응답과 함수 호출의 조합
 
 4. **실용적 애플리케이션 개발**
    - 콘솔 기반 채팅봇
    - 웹 기반 인터페이스
    - 함수 호출 기능이 포함된 AI 시스템
+   - 실시간 데이터 조회 시스템 (주식, 시간 등)
+
+## 🚀 고급 기능
+
+### 스트리밍 응답 처리
+- **실시간 타이핑 효과**: 응답이 실시간으로 타이핑되듯이 표시
+- **함수 호출 후 스트리밍**: 툴 실행 후 최종 응답도 스트리밍으로 처리
+- **사용자 경험 향상**: 더 자연스러운 대화 인터페이스
+
+### 다중 함수 호출
+- **동시 실행**: 여러 함수를 동시에 호출하여 효율적인 데이터 수집
+- **메시지 순서 최적화**: OpenAI API 요구사항에 맞는 메시지 구조
+- **안정적인 처리**: 함수 호출 오류 방지 및 안정적인 응답 생성
+
+### 실시간 데이터 연동
+- **Yahoo Finance API**: 실시간 주식 데이터 조회
+- **다양한 시간대**: 전 세계 시간대 지원
+- **마크다운 형식**: 표 형태의 데이터를 깔끔하게 표시
 
 ## 🔒 보안 주의사항
 
