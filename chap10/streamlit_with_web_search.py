@@ -12,6 +12,10 @@ import pytz
 from langchain_community.tools import DuckDuckGoSearchResults
 from langchain_community.utilities import DuckDuckGoSearchAPIWrapper
 
+from youtube_search import YoutubeSearch
+from youtube_transcript_api import YouTubeTranscriptApi
+from typing import List
+
 # 환경 변수 로드
 load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY")
@@ -59,11 +63,48 @@ def get_web_search(query: str, search_period: str) -> str:
     docs = search.invoke(query)
     return docs
 
+@tool
+def get_youtube_search(query: str) -> str:
+    """
+    유튜브 검색을 한 뒤, 영상들의 내용을 반환하는 함수.
+
+    Args:
+        query (str): 검색어
+    
+    Returns:
+        str: 검색 결과
+    """
+    print('------------ YOUTUBE SEARCH ------------')
+    print(query)
+
+    videos = YoutubeSearch(query, max_results=5).to_dict()
+
+    videos = [video for video in videos if len(video['duration']) <= 5]
+
+    for video in videos:
+        video_url = 'https://youtube.com' + video['url_suffix']
+        video_id = video['url_suffix'].split('v=')[-1] if 'v=' in video['url_suffix'] else video['url_suffix'].split('/')[-1]
+
+        try:
+            # 자막 가져오기
+            transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=['ko', 'en'])
+            transcript_text = ' '.join([item['text'] for item in transcript_list])
+            
+            video['video_url'] = video_url
+            video['content'] = transcript_text
+        except Exception as e:
+            print(f"자막을 가져올 수 없습니다: {e}")
+            video['video_url'] = video_url
+            video['content'] = "자막을 가져올 수 없습니다."
+    
+    return str(videos)
+
 # 도구 바인딩
-tools = [get_current_time, get_web_search]
+tools = [get_current_time, get_web_search, get_youtube_search]
 tool_dict = {
     "get_current_time": get_current_time,
     "get_web_search": get_web_search,
+    "get_youtube_search": get_youtube_search,
 }
 
 llm_with_tools = llm.bind_tools(tools)
@@ -86,8 +127,14 @@ def get_ai_response(messages):
 
         for tool_call in gathered.tool_calls:
             selected_tool = tool_dict[tool_call['name']]
-            tool_msg = selected_tool.invoke(tool_call)
-            print(tool_msg, type(tool_msg))
+            tool_result = selected_tool.invoke(tool_call['args'])
+            print(tool_result, type(tool_result))
+            
+            # ToolMessage 생성
+            tool_msg = ToolMessage(
+                content=str(tool_result),
+                tool_call_id=tool_call['id']
+            )
             st.session_state.messages.append(tool_msg)
         
         for chunk in get_ai_response(st.session_state.messages):
