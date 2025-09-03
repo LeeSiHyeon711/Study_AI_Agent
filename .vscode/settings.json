@@ -9,5 +9,6 @@
     ],
     "cursorpyright.analysis.extraPaths": [
         "./.venv/Lib/site-packages"
-    ]
+    ],
+    "vscode-pets.throwBallWithMouse": false
 }
