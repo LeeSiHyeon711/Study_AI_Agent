@@ -27,9 +27,26 @@ Study_AI_Agent/
 │   ├── rag.py             # Streamlit 기반 RAG 채팅 애플리케이션
 │   ├── retriever.py       # RAG 검색 및 문서 처리 모듈
 │   └── data/              # RAG 학습용 데이터
-│       ├── OneNYC_2050_Strategic_Plan.pdf # 뉴욕시 전략 계획서
+│       ├── OneNYC-2050-Summary.pdf # 뉴욕시 전략 계획서 요약본
 │       └── 2040_seoul_plan.pdf # 서울시 2040 계획서
-├── chroma_store/          # Chroma 벡터 데이터베이스 저장소
+├── chap10/                 # 10장: 웹 검색 및 유튜브 연동
+│   ├── streamlit_with_web_search.py # 웹 검색, 유튜브 검색, 시간 조회 통합 도구
+│   ├── duckduckgo.ipynb   # DuckDuckGo 웹 검색 도구 실습
+│   ├── youtube_summary.ipynb # 유튜브 동영상 요약 실습
+│   └── youtube_summary_fixed.py # 유튜브 자막 추출 및 처리 모듈
+├── chap11/                 # 11장: 로컬 LLM (DeepSeek)
+│   └── deepseek_simple_chatbot.py # Ollama 기반 DeepSeek LLM 채팅봇
+├── chap12/                 # 12장: LangGraph 기반 AI Agent
+│   ├── langgraph_memory.py # LangGraph를 활용한 메모리 기반 대화 시스템
+│   ├── langgraph_simple_chatbot.ipynb # LangGraph 기본 채팅봇 구현
+│   └── langgraph_tools.ipynb # LangGraph 도구 연동 시스템
+├── chap13/                 # 13장: LangGraph + RAG 통합 시스템
+│   ├── rag_with_langgraph.ipynb # LangGraph와 RAG를 결합한 고급 AI Agent
+│   ├── chroma_store/      # 벡터 데이터베이스 저장소
+│   └── data/              # RAG 학습용 데이터
+│       ├── OneNYC-2050-Summary.pdf # 뉴욕시 전략 계획서 요약본
+│       └── 2040_seoul_plan.pdf # 서울시 2040 계획서
+├── AI/                     # 가상환경 및 패키지
 ├── .venv/                  # 가상환경
 ├── .gitignore             # Git 무시 파일 설정
 └── README.md              # 프로젝트 설명서
@@ -391,6 +408,262 @@ AI: 서울시 2040 계획서를 참조하여 교통 정책에 대해 답변드�
 [문서: 2040_seoul_plan.pdf, 페이지: 45-52]
 ```
 
+### Chapter 10: 웹 검색 및 유튜브 연동
+
+#### 10.1 통합 웹 검색 도구 (`streamlit_with_web_search.py`)
+
+- **웹 검색**: DuckDuckGo API를 활용한 실시간 웹 검색
+- **유튜브 검색**: 유튜브 동영상 검색 및 자막 추출
+- **시간 조회**: 다양한 타임존의 현재 시간 조회
+- **통합 도구 시스템**: 여러 도구를 하나의 인터페이스에서 활용
+
+**주요 기능**:
+- **DuckDuckGo 웹 검색**: `get_web_search` 함수로 실시간 웹 검색 결과 제공
+- **유튜브 검색 및 자막**: `get_youtube_search` 함수로 동영상 검색 및 자막 추출
+- **시간 조회**: `get_current_time` 함수로 전 세계 시간대 지원
+- **Streamlit 인터페이스**: 웹 기반 사용자 친화적 도구 활용 환경
+
+**주요 특징**:
+- **다중 도구 통합**: 웹 검색, 유튜브, 시간 조회를 하나의 시스템에서 처리
+- **실시간 검색**: DuckDuckGo API를 통한 최신 웹 정보 검색
+- **유튜브 자막 분석**: 동영상 내용을 자막을 통해 텍스트로 분석
+- **검색 기간 설정**: 과거 1주일, 1개월, 1년 등 검색 기간 지정 가능
+
+**실행 방법**:
+```bash
+streamlit run chap10/streamlit_with_web_search.py
+```
+
+#### 10.2 DuckDuckGo 웹 검색 실습 (`duckduckgo.ipynb`)
+
+- **Jupyter 노트북**: 인터랙티브한 웹 검색 도구 학습 환경
+- **DuckDuckGo API**: 프라이버시 중심의 검색 엔진 활용
+- **검색 결과 처리**: 검색 결과의 구조화 및 분석
+
+**주요 기능**:
+- **웹 검색 API**: DuckDuckGo 검색 결과 실시간 조회
+- **검색 파라미터**: 지역, 시간, 언어 등 검색 조건 설정
+- **결과 구조화**: 검색 결과를 체계적으로 정리 및 표시
+
+**실행 방법**:
+```bash
+jupyter notebook chap10/duckduckgo.ipynb
+```
+
+#### 10.3 유튜브 동영상 요약 실습 (`youtube_summary.ipynb`)
+
+- **유튜브 검색**: 키워드 기반 동영상 검색
+- **자막 추출**: YouTube Transcript API를 활용한 자막 데이터 수집
+- **내용 분석**: 자막을 통한 동영상 내용 이해 및 요약
+
+**주요 기능**:
+- **동영상 검색**: `youtube_search` 라이브러리를 활용한 동영상 검색
+- **자막 추출**: 한국어/영어 자막 자동 감지 및 추출
+- **내용 요약**: 추출된 자막을 바탕으로 동영상 내용 분석
+
+**실행 방법**:
+```bash
+jupyter notebook chap10/youtube_summary.ipynb
+```
+
+#### 10.4 유튜브 자막 처리 모듈 (`youtube_summary_fixed.py`)
+
+- **자막 추출 모듈**: 재사용 가능한 유튜브 자막 처리 컴포넌트
+- **URL 파싱**: 다양한 유튜브 URL 형식에서 video ID 추출
+- **다국어 지원**: 한국어 우선, 영어 대체 자막 처리
+
+**주요 기능**:
+- **URL 파싱**: 정규표현식을 활용한 video ID 추출
+- **자막 가져오기**: YouTube Transcript API를 통한 자막 수집
+- **언어 우선순위**: 한국어 자막 우선, 실패 시 영어 자막 시도
+- **에러 핸들링**: 자막 추출 실패 시 대체 방안 제공
+
+**사용 예시**:
+```python
+# 키워드 검색
+videos = YoutubeSearch("미국 대선", max_results=5).to_dict()
+
+# 자막 가져오기
+transcript = get_youtube_transcript(video_url)
+
+# 전체 자막 텍스트 합치기
+full_text = " ".join([segment.text for segment in transcript])
+```
+
+### Chapter 11: 로컬 LLM (DeepSeek)
+
+#### 11.1 DeepSeek LLM 채팅봇 (`deepseek_simple_chatbot.py`)
+
+- **로컬 LLM**: Ollama를 통한 로컬에서 실행되는 언어 모델
+- **DeepSeek 모델**: DeepSeek-LLM 7B 모델 활용
+- **스트리밍 응답**: 실시간 타이핑 효과로 응답 표시
+- **한국어 지원**: 한국어 응답 강제 설정
+
+**주요 기능**:
+- **Ollama 연동**: `langchain-ollama`를 통한 로컬 LLM 연결
+- **DeepSeek 모델**: `deepseek-llm:7b-chat` 모델 사용
+- **스트리밍 응답**: `llm.stream()`을 통한 실시간 응답 처리
+- **한국어 강제**: 시스템 메시지를 통한 한국어 응답 보장
+
+**주요 특징**:
+- **로컬 실행**: 인터넷 연결 없이도 AI 채팅 가능
+- **개인정보 보호**: 데이터가 로컬에서만 처리됨
+- **비용 절약**: API 호출 비용 없이 무제한 사용 가능
+- **커스터마이징**: 다양한 오픈소스 모델 선택 가능
+
+**실행 방법**:
+```bash
+# Ollama 설치 및 DeepSeek 모델 다운로드
+ollama pull deepseek-llm:7b-chat
+
+# Streamlit 앱 실행
+streamlit run chap11/deepseek_simple_chatbot.py
+```
+
+**사용 예시**:
+```
+사용자: 안녕하세요, 오늘 날씨가 어때요?
+AI: 안녕하세요! 오늘 날씨에 대해 말씀드리기에는 제가 실시간 날씨 정보에 접근할 수 없어서 정확한 답변을 드릴 수 없습니다. 
+
+하지만 일반적으로 날씨 정보를 확인하는 방법을 알려드릴 수 있어요:
+1. 날씨 앱이나 웹사이트 확인
+2. 기상청 공식 사이트 방문
+3. 지역별 날씨 검색
+
+혹시 특정 지역의 날씨가 궁금하시다면, 해당 지역을 말씀해 주시면 더 구체적인 정보를 찾아드릴 수 있을 것 같습니다.
+```
+
+### Chapter 12: LangGraph 기반 AI Agent
+
+#### 12.1 LangGraph 메모리 시스템 (`langgraph_memory.py`)
+
+- **상태 관리**: `StateGraph`를 활용한 대화 상태 관리
+- **메모리 지속성**: `MemorySaver`를 통한 대화 기록 저장
+- **그래프 기반 처리**: 노드와 엣지로 구성된 AI 처리 파이프라인
+- **체크포인트**: 대화 세션별 독립적인 메모리 관리
+
+**주요 기능**:
+- **StateGraph**: `State` 클래스를 통한 대화 상태 정의
+- **메모리 저장**: `MemorySaver`를 활용한 대화 기록 지속성
+- **노드 기반 처리**: `generate` 노드를 통한 AI 응답 생성
+- **세션 관리**: `thread_id`를 통한 독립적인 대화 세션
+
+**주요 특징**:
+- **상태 기반 아키텍처**: TypedDict를 활용한 타입 안전한 상태 관리
+- **메모리 지속성**: 대화 세션 간 메시지 히스토리 유지
+- **그래프 구조**: 확장 가능한 노드 기반 처리 시스템
+- **체크포인트 시스템**: 대화 상태의 안전한 저장 및 복원
+
+**실행 방법**:
+```bash
+python chap12/langgraph_memory.py
+```
+
+**사용 예시**:
+```python
+# 상태 정의
+class State(TypedDict):
+    messages: Annotated[list[str], add_messages]
+
+# 그래프 구성
+graph_builder = StateGraph(State)
+graph_builder.add_node("generate", generate)
+graph_builder.add_edge(START, "generate")
+graph_builder.add_edge("generate", END)
+
+# 메모리와 함께 컴파일
+memory = MemorySaver()
+graph = graph_builder.compile(checkpointer=memory)
+
+# 대화 실행
+for event in graph.stream({"messages": [HumanMessage(user_input)]}, config):
+    event["messages"][-1].pretty_print()
+```
+
+#### 12.2 LangGraph 기본 채팅 (`langgraph_simple_chatbot.ipynb`)
+
+- **Jupyter 노트북**: 인터랙티브한 LangGraph 학습 환경
+- **기본 채팅 시스템**: LangGraph의 핵심 개념 이해
+- **상태 관리**: 대화 상태의 구조화 및 관리 방법
+
+**주요 기능**:
+- **LangGraph 기본 구조**: 그래프 기반 AI 처리 시스템 이해
+- **상태 관리**: 대화 상태의 정의 및 업데이트 방법
+- **노드 구성**: AI 처리 파이프라인의 노드 구성 및 연결
+
+**실행 방법**:
+```bash
+jupyter notebook chap12/langgraph_simple_chatbot.ipynb
+```
+
+#### 12.3 LangGraph 도구 연동 시스템 (`langgraph_tools.ipynb`)
+
+- **도구 통합**: LangGraph와 LangChain 도구의 결합
+- **고급 AI Agent**: 도구를 활용한 능동적인 AI 에이전트
+- **복잡한 워크플로우**: 다단계 AI 처리 파이프라인 구현
+
+**주요 기능**:
+- **도구 바인딩**: LangGraph에서 LangChain 도구 활용
+- **워크플로우 관리**: 복잡한 AI 처리 과정의 체계적 관리
+- **상태 기반 도구 실행**: 대화 상태에 따른 동적 도구 선택
+
+**실행 방법**:
+```bash
+jupyter notebook chap12/langgraph_tools.ipynb
+```
+
+### Chapter 13: LangGraph + RAG 통합 시스템
+
+#### 13.1 LangGraph RAG 통합 시스템 (`rag_with_langgraph.ipynb`)
+
+- **고급 RAG**: LangGraph와 RAG의 결합으로 더욱 지능적인 AI Agent
+- **FAISS 벡터 저장소**: Chroma 대신 FAISS를 활용한 고성능 벡터 검색
+- **그래프 기반 RAG**: LangGraph의 상태 관리와 RAG의 검색 기능 결합
+- **대화 맥락 이해**: 복잡한 대화 흐름에서도 정확한 문서 검색 및 응답
+
+**주요 기능**:
+- **FAISS 벡터 저장소**: 고성능 벡터 검색을 위한 FAISS 활용
+- **문서 처리 파이프라인**: PDF 로딩부터 텍스트 분할까지 자동화
+- **그래프 기반 상태 관리**: LangGraph를 통한 RAG 상태 관리
+- **고급 검색 알고리즘**: 복잡한 쿼리에 대한 정확한 문서 검색
+
+**주요 특징**:
+- **성능 최적화**: FAISS를 통한 빠른 벡터 검색
+- **확장 가능한 아키텍처**: 대용량 문서 처리 지원
+- **상태 기반 RAG**: 대화 맥락을 고려한 문서 검색
+- **그래프 기반 처리**: 복잡한 AI 워크플로우 지원
+
+**학습 데이터**:
+- **뉴욕시 전략 계획서**: OneNYC 2050 Strategic Plan 요약본
+- **서울시 2040 계획서**: 2040 Seoul Plan
+
+**실행 방법**:
+```bash
+jupyter notebook chap13/rag_with_langgraph.ipynb
+```
+
+**사용 예시**:
+```python
+# PDF 문서 처리
+def read_pdf_and_split_text(pdf_path, chunk_size=1000, chunk_overlap=100):
+    pdf_loader = PyPDFLoader(pdf_path)
+    data_from_pdf = pdf_loader.load()
+    
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=chunk_size, 
+        chunk_overlap=chunk_overlap
+    )
+    splits = text_splitter.split_documents(data_from_pdf)
+    return splits
+
+# FAISS 벡터 저장소 생성
+embedding = OpenAIEmbeddings(model='text-embedding-3-large')
+vectorstore = FAISS.from_documents(documents=chunks, embedding=embedding)
+
+# LangGraph와 RAG 결합
+# (구체적인 구현은 노트북에서 확인 가능)
+```
+
 ## 🔧 주요 기능
 
 ### 1. 환경 변수 관리
@@ -419,7 +692,32 @@ AI: 서울시 2040 계획서를 참조하여 교통 정책에 대해 답변드�
 - **문맥 기반 응답**: 검색된 문서를 바탕으로 정확한 답변 생성
 - **실시간 검색**: 사용자 질문에 관련된 문서를 실시간으로 검색
 
-### 5. 모델 설정
+### 5. 웹 검색 및 유튜브 연동
+- **DuckDuckGo 검색**: 프라이버시 중심의 웹 검색 API 활용
+- **유튜브 검색**: 동영상 검색 및 자막 추출을 통한 내용 분석
+- **통합 도구 시스템**: 웹 검색, 유튜브, 시간 조회를 하나의 인터페이스에서 활용
+- **검색 기간 설정**: 과거 1주일, 1개월, 1년 등 검색 기간 지정 가능
+
+### 6. 로컬 LLM (DeepSeek)
+- **Ollama 연동**: 로컬에서 실행되는 언어 모델 시스템
+- **DeepSeek 모델**: DeepSeek-LLM 7B 모델을 활용한 한국어 채팅
+- **개인정보 보호**: 데이터가 로컬에서만 처리되어 프라이버시 보장
+- **비용 절약**: API 호출 비용 없이 무제한 AI 채팅 가능
+
+### 7. LangGraph 기반 AI Agent
+- **상태 관리**: `StateGraph`를 활용한 체계적인 대화 상태 관리
+- **메모리 지속성**: `MemorySaver`를 통한 대화 기록의 안전한 저장 및 복원
+- **그래프 기반 처리**: 노드와 엣지로 구성된 확장 가능한 AI 처리 파이프라인
+- **체크포인트 시스템**: 대화 세션별 독립적인 메모리 관리
+- **도구 통합**: LangGraph와 LangChain 도구의 결합으로 더욱 능동적인 AI Agent
+
+### 8. LangGraph + RAG 통합 시스템
+- **고급 RAG**: LangGraph의 상태 관리와 RAG의 검색 기능을 결합한 지능형 시스템
+- **FAISS 벡터 저장소**: Chroma 대신 FAISS를 활용한 고성능 벡터 검색
+- **그래프 기반 상태 관리**: 복잡한 대화 흐름에서도 정확한 문서 검색 및 응답
+- **확장 가능한 아키텍처**: 대용량 문서 처리 및 복잡한 AI 워크플로우 지원
+
+### 9. 모델 설정
 - GPT-4o 모델 사용
 - Temperature 조절을 통한 응답 창의성 제어
 - 시스템 메시지를 통한 AI 페르소나 설정
@@ -432,7 +730,16 @@ AI: 서울시 2040 계획서를 참조하여 교통 정책에 대해 답변드�
 AI: 안녕하세요, 시현님! 만나서 반갑습니다. 오늘 어떻게 도와드릴까요?
 
 사용자: 내 이름이 뭘까?
-AI: 시현님이라고 소개해 주셨는데, 더 구체적으로 말씀해주시면...
+AI: 시현님이라고 소개해 주셨죠! 제가 대화 상태를 기억하고 있어서 이전 대화 내용을 모두 알고 있습니다.
+
+사용자: 그럼 제가 지금까지 몇 번 대화했나요?
+AI: 현재 대화 세션에서 총 3번의 메시지를 주고받았습니다. 
+
+- 첫 번째: 김철수님이 이름을 소개해 주셨습니다
+- 두 번째: 제가 인사를 했습니다  
+- 세 번째: 김철수님이 제가 이름을 기억하는지 확인하셨습니다
+
+LangGraph의 상태 관리 시스템 덕분에 모든 대화 내용을 체계적으로 추적하고 있습니다.
 ```
 
 ### 함수 호출 예시
@@ -501,6 +808,112 @@ AI: 서울시 2040 계획서를 참조하여 교통 정책에 대해 답변드�
 [참조 문서: 2040_seoul_plan.pdf, 페이지: 45-52, 78-85]
 ```
 
+### 웹 검색 및 유튜브 연동 예시
+
+#### 웹 검색
+```
+사용자: 최신 AI 기술 동향에 대해 검색해줘
+AI: 웹 검색을 통해 최신 AI 기술 동향에 대한 정보를 찾아보겠습니다.
+
+검색 결과:
+1. **생성형 AI의 발전**: GPT-4, Claude, Gemini 등 대형 언어 모델의 성능 향상
+2. **멀티모달 AI**: 텍스트, 이미지, 음성, 비디오를 통합 처리하는 AI 시스템
+3. **AI 에이전트**: 자율적으로 작업을 수행하는 AI 에이전트 기술
+4. **AI 규제 및 윤리**: AI 발전에 따른 규제 프레임워크 및 윤리적 고려사항
+
+[검색 기간: 최근 1개월, 지역: 한국]
+```
+
+#### 유튜브 검색 및 자막 분석
+```
+사용자: AI 에이전트에 대한 유튜브 동영상을 찾아서 요약해줘
+AI: AI 에이전트에 대한 유튜브 동영상을 검색하고 자막을 분석하여 요약해드리겠습니다.
+
+검색된 동영상:
+1. **"AI 에이전트의 미래"** (5분 23초)
+   - 내용: AI 에이전트가 일상생활에서 수행할 수 있는 작업들
+   - 핵심: 자율성, 학습 능력, 인간과의 협업
+
+2. **"LangChain으로 AI 에이전트 만들기"** (4분 15초)
+   - 내용: LangChain 프레임워크를 활용한 AI 에이전트 개발 방법
+   - 핵심: 도구 연동, 메모리 관리, 워크플로우 구성
+
+[자막 분석 완료: 총 2개 동영상, 한국어 자막 우선 처리]
+```
+
+### 로컬 LLM (DeepSeek) 예시
+
+#### 개인정보 보호 채팅
+```
+사용자: 내 개인정보를 수집하지 말고 대화해줘
+AI: 네, 걱정하지 마세요! 저는 Ollama를 통해 로컬에서 실행되는 AI 모델이에요. 
+
+제가 하는 일은:
+- 모든 대화가 여러분의 컴퓨터에서만 처리됩니다
+- 인터넷으로 데이터를 전송하지 않습니다
+- 대화 내용이 외부 서버에 저장되지 않습니다
+- 완전히 프라이버시가 보장됩니다
+
+그래서 마음 편하게 대화하실 수 있어요. 어떤 주제로 이야기하고 싶으신가요?
+```
+
+### LangGraph 기반 AI Agent 예시
+
+#### 상태 기반 대화 관리
+```
+사용자: 안녕하세요, 제 이름은 김철수입니다
+AI: 안녕하세요, 김철수님! 만나서 반갑습니다. 오늘 어떻게 도와드릴까요?
+
+사용자: 내 이름이 뭔지 기억하시나요?
+AI: 네, 김철수님이라고 소개해 주셨죠! 제가 대화 상태를 기억하고 있어서 이전 대화 내용을 모두 알고 있습니다.
+
+사용자: 그럼 제가 지금까지 몇 번 대화했나요?
+AI: 현재 대화 세션에서 총 3번의 메시지를 주고받았습니다. 
+
+- 첫 번째: 김철수님이 이름을 소개해 주셨습니다
+- 두 번째: 제가 인사를 했습니다  
+- 세 번째: 김철수님이 제가 이름을 기억하는지 확인하셨습니다
+
+LangGraph의 상태 관리 시스템 덕분에 모든 대화 내용을 체계적으로 추적하고 있습니다.
+```
+
+### LangGraph + RAG 통합 시스템 예시
+
+#### 복잡한 대화 맥락에서의 문서 검색
+```
+사용자: 서울시 2040 계획에서 교통 정책은 어떻게 되어있나요?
+AI: 서울시 2040 계획서를 참조하여 교통 정책에 대해 답변드리겠습니다.
+
+[문서 검색 중... LangGraph 상태 업데이트]
+- 검색된 문서: 2040_seoul_plan.pdf (페이지 45-52, 78-85)
+- 관련성 점수: 0.89, 0.76, 0.72
+
+서울시 2040 계획의 주요 교통 정책은 다음과 같습니다:
+
+1. **대중교통 중심 도시**: 지하철, 버스 등 대중교통 확충
+2. **친환경 교통**: 전기차, 수소차 등 친환경 차량 보급 확대
+3. **보행자 중심**: 보행자 우선 도시 조성
+4. **스마트 교통**: AI 기반 교통 관리 시스템 구축
+
+[LangGraph 상태: 교통 정책 관련 대화 컨텍스트 저장됨]
+
+사용자: 그럼 환경 정책은 어떻게 되어있나요?
+AI: 서울시 2040 계획서에서 환경 정책에 대해 추가로 검색해보겠습니다.
+
+[이전 교통 정책 컨텍스트를 고려한 검색...]
+- 검색된 문서: 2040_seoul_plan.pdf (페이지 23-30, 67-74)
+- 관련성 점수: 0.91, 0.85
+
+환경 정책은 교통 정책과 연계되어 다음과 같이 구성되어 있습니다:
+
+1. **탄소 중립 목표**: 2040년까지 탄소 중립 달성
+2. **청정에너지 확대**: 태양광, 풍력 등 재생에너지 확대
+3. **친환경 교통**: 전기차, 수소차 보급 확대 (교통 정책과 연계)
+4. **녹지 확대**: 도시 녹지율 30% 달성
+
+[LangGraph 상태: 교통-환경 정책 통합 컨텍스트 업데이트됨]
+```
+
 ### 종료 방법
 - 콘솔 애플리케이션: `exit` 입력
 - Streamlit: 브라우저 창 닫기
@@ -519,6 +932,12 @@ AI: 서울시 2040 계획서를 참조하여 교통 정책에 대해 답변드�
 - **Chroma**: 벡터 데이터베이스
 - **langchain-community**: 문서 로더 및 텍스트 분할기
 - **langchain-chroma**: Chroma 벡터 저장소 연동
+- **langchain-ollama**: Ollama를 통한 로컬 LLM 연동
+- **duckduckgo-search**: DuckDuckGo 웹 검색 API
+- **youtube-search**: 유튜브 동영상 검색
+- **youtube-transcript-api**: 유튜브 자막 추출
+- **faiss-cpu**: FAISS 벡터 데이터베이스 (CPU 버전)
+- **langgraph**: LangGraph 기반 AI Agent 개발 프레임워크
 
 ## 📖 학습 목표
 
@@ -546,7 +965,31 @@ AI: 서울시 2040 계획서를 참조하여 교통 정책에 대해 답변드�
    - 문맥 기반 AI 응답 생성
    - Chroma 벡터 저장소 활용
 
-5. **실용적 애플리케이션 개발**
+5. **웹 검색 및 유튜브 연동 시스템 구현**
+   - DuckDuckGo API를 활용한 실시간 웹 검색
+   - YouTube Transcript API를 통한 동영상 자막 추출 및 분석
+   - 통합 도구 시스템을 통한 다중 정보 소스 활용
+   - 검색 기간 설정 및 지역별 검색 결과 최적화
+
+6. **로컬 LLM 시스템 구현**
+   - Ollama를 통한 로컬 언어 모델 실행
+   - DeepSeek-LLM 모델을 활용한 한국어 AI 채팅
+   - 개인정보 보호 및 비용 절약을 위한 로컬 AI 시스템
+   - 다양한 오픈소스 모델 선택 및 커스터마이징
+
+7. **LangGraph 기반 AI Agent 시스템**
+   - LangGraph를 활용한 상태 기반 AI 처리 시스템
+   - 그래프 구조를 통한 복잡한 AI 워크플로우 구현
+   - 메모리 지속성 및 체크포인트 시스템을 통한 안정적인 대화 관리
+   - 노드 기반 확장 가능한 AI 처리 파이프라인 구축
+
+8. **LangGraph + RAG 통합 시스템**
+   - LangGraph와 RAG의 결합으로 더욱 지능적인 AI Agent 구현
+   - FAISS 벡터 저장소를 활용한 고성능 문서 검색
+   - 복잡한 대화 맥락에서의 정확한 문서 검색 및 응답 생성
+   - 확장 가능한 아키텍처를 통한 대용량 문서 처리 시스템
+
+9. **실용적 애플리케이션 개발**
    - 콘솔 기반 채팅봇
    - 웹 기반 인터페이스
    - 함수 호출 기능이 포함된 AI 시스템
@@ -558,6 +1001,10 @@ AI: 서울시 2040 계획서를 참조하여 교통 정책에 대해 답변드�
    - 벡터 데이터베이스를 활용한 지식 검색 시스템
    - Streamlit 기반 RAG 채팅 애플리케이션
    - 모듈화된 RAG 시스템 컴포넌트 개발
+   - 웹 검색 및 유튜브 연동을 통한 실시간 정보 수집 시스템
+   - 로컬 LLM을 활용한 개인정보 보호 AI 채팅 시스템
+   - LangGraph 기반 상태 관리 및 메모리 지속성 시스템
+   - FAISS 벡터 저장소를 활용한 고성능 RAG 시스템
 
 ## 🚀 고급 기능
 
@@ -582,6 +1029,31 @@ AI: 서울시 2040 계획서를 참조하여 교통 정책에 대해 답변드�
 - **도구 바인딩**: `llm.bind_tools()`를 통한 모델과 도구의 연결
 - **재귀적 스트리밍**: 도구 호출 후 최종 응답도 스트리밍으로 처리
 - **메시지 타입 구분**: 시스템, 사용자, AI, 도구 메시지를 구분하여 표시
+
+### 웹 검색 및 유튜브 연동
+- **DuckDuckGo 검색**: 프라이버시 중심의 웹 검색 API 활용
+- **유튜브 검색**: 동영상 검색 및 자막 추출을 통한 내용 분석
+- **통합 도구 시스템**: 웹 검색, 유튜브, 시간 조회를 하나의 인터페이스에서 활용
+- **검색 기간 설정**: 과거 1주일, 1개월, 1년 등 검색 기간 지정 가능
+
+### 로컬 LLM (DeepSeek)
+- **Ollama 연동**: 로컬에서 실행되는 언어 모델 시스템
+- **DeepSeek 모델**: DeepSeek-LLM 7B 모델을 활용한 한국어 채팅
+- **개인정보 보호**: 데이터가 로컬에서만 처리되어 프라이버시 보장
+- **비용 절약**: API 호출 비용 없이 무제한 AI 채팅 가능
+
+### LangGraph 기반 AI Agent
+- **상태 관리**: `StateGraph`를 활용한 체계적인 대화 상태 관리
+- **메모리 지속성**: `MemorySaver`를 통한 대화 기록의 안전한 저장 및 복원
+- **그래프 기반 처리**: 노드와 엣지로 구성된 확장 가능한 AI 처리 파이프라인
+- **체크포인트 시스템**: 대화 세션별 독립적인 메모리 관리
+- **도구 통합**: LangGraph와 LangChain 도구의 결합으로 더욱 능동적인 AI Agent
+
+### LangGraph + RAG 통합 시스템
+- **고급 RAG**: LangGraph의 상태 관리와 RAG의 검색 기능을 결합한 지능형 시스템
+- **FAISS 벡터 저장소**: Chroma 대신 FAISS를 활용한 고성능 벡터 검색
+- **그래프 기반 상태 관리**: 복잡한 대화 흐름에서도 정확한 문서 검색 및 응답
+- **확장 가능한 아키텍처**: 대용량 문서 처리 및 복잡한 AI 워크플로우 지원
 
 ### RAG 시스템
 - **문서 처리 파이프라인**: PDF 로딩부터 텍스트 분할까지 자동화
