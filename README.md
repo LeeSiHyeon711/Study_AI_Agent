@@ -46,16 +46,20 @@ Study_AI_Agent/
 │   └── data/              # RAG 학습용 데이터
 │       ├── OneNYC-2050-Summary.pdf # 뉴욕시 전략 계획서 요약본
 │       └── 2040_seoul_plan.pdf # 서울시 2040 계획서
-├── chap14/                 # 14장: 다중 AI Agent 협업 시스템
+├── chap14/                 # 14장: 고급 다중 AI Agent 협업 시스템
 │   ├── book_writer.py     # 다중 AI Agent를 활용한 책 작성 시스템
 │   ├── models.py          # Task 모델 정의
 │   ├── tools.py           # 웹 검색 및 벡터 검색 도구
 │   ├── utils.py           # 상태 저장 및 목차 관리 유틸리티
 │   ├── book_writer.png    # LangGraph 시각화 이미지
+│   ├── book_writer_graph.mmd # Mermaid 그래프 정의
+│   ├── templates/         # 목차 템플릿
+│   │   └── outline_template.md # 표준 목차 템플릿
 │   └── data/              # 작업 상태 및 목차 데이터
 │       ├── state.json     # AI Agent 작업 상태 저장
 │       ├── outline.md     # 생성된 책 목차
-│       └── chroma_store/  # 웹 검색 결과 벡터 저장소
+│       ├── chroma_store/  # 웹 검색 결과 벡터 저장소
+│       └── resources_*.json # 웹 검색 결과 저장
 ├── AI/                     # 가상환경 및 패키지
 ├── .venv/                  # 가상환경
 ├── .gitignore             # Git 무시 파일 설정
@@ -112,7 +116,7 @@ Study_AI_Agent/
 ### 🚀 고급 시스템 (12-14장)
 - **LangGraph**: 상태 기반 AI Agent 및 메모리 관리
 - **RAG 통합**: LangGraph + RAG 결합 시스템
-- **다중 Agent**: 협업을 통한 자동화된 콘텐츠 생성
+- **다중 Agent**: 7개 Agent 협업을 통한 자동화된 콘텐츠 생성
 
 ## 🔧 주요 기능
 
@@ -137,10 +141,14 @@ Study_AI_Agent/
 - 메모리 지속성 및 체크포인트
 - 복잡한 워크플로우 자동화
 
-### 5. **다중 Agent 협업**
-- 역할 기반 분업 (Supervisor, Content Strategist, Communicator)
-- 자동화된 책 작성 및 콘텐츠 생성
-- 웹 검색 결과의 벡터 저장 및 검색
+### 5. **다중 Agent 협업 (7개 Agent)**
+- **Business Analyst**: 요구사항 분석 및 작업 결정
+- **Supervisor**: 전체 워크플로우 관리
+- **Content Strategist**: 목차 및 콘텐츠 전략 수립
+- **Outline Reviewer**: 목차 검토 및 개선
+- **Vector Search Agent**: 벡터 검색을 통한 정보 수집
+- **Web Search Agent**: 웹 검색을 통한 최신 정보 수집
+- **Communicator**: 사용자와의 소통 및 피드백 수집
 
 ## 🛠️ 기술 스택
 
@@ -160,7 +168,7 @@ Study_AI_Agent/
 4. **웹 검색 및 멀티미디어 연동** - 실시간 정보 수집 및 분석
 5. **로컬 LLM 시스템** - 개인정보 보호 및 비용 절약
 6. **LangGraph 기반 AI Agent** - 상태 관리 및 복잡한 워크플로우
-7. **다중 Agent 협업** - 역할 기반 분업 및 자동화된 작업 처리
+7. **다중 Agent 협업** - 7개 Agent의 역할 기반 분업 및 자동화된 작업 처리
 
 ## 🎯 핵심 특징
 
@@ -169,6 +177,7 @@ Study_AI_Agent/
 - **다양한 인터페이스**: 콘솔, 웹, 노트북 등 다양한 실행 환경
 - **확장 가능한 구조**: 모듈화된 컴포넌트로 새로운 기능 추가 용이
 - **상태 지속성**: 작업 진행 상황 저장 및 재개 가능
+- **템플릿 시스템**: 표준화된 목차 템플릿으로 일관된 품질 보장
 
 ## 🚀 실행 예시
 
@@ -182,7 +191,7 @@ streamlit run chap03/streamlit_basic.py
 streamlit run chap09/rag.py
 ```
 
-### 다중 Agent 협업
+### 고급 다중 Agent 협업
 ```bash
 python chap14/book_writer.py
 ```
